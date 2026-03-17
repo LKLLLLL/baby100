@@ -549,6 +549,36 @@
       line-height: var(--leading-normal);
     }
 
+    .achievement.locked {
+      opacity: 0.5;
+      filter: grayscale(0.8);
+    }
+
+    .achievement.locked .achievement-badge {
+      background: linear-gradient(135deg, #ccc, #999);
+    }
+
+    .achievement.locked .achievement-badge::before {
+      content: '🔒';
+    }
+
+    .achievement-badge.completed {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+    }
+
+    .achievement-badge.completed::before {
+      content: '✓';
+    }
+
+    .achievement-badge.pending {
+      background: linear-gradient(135deg, #FFD93D, #FF8FA3);
+      animation: pulse 2s infinite;
+    }
+
+    .achievement-badge.pending::before {
+      content: '⏳';
+    }
+
     /* ===== 相册 ===== */
     .gallery-grid {
       display: grid;
@@ -1506,43 +1536,8 @@
       </div>
 
       <h2 class="section-title" style="margin-top: 40px;">🏆 成就解锁</h2>
-      <div class="achievements">
-        <div class="achievement">
-          <div class="achievement-title">
-            第一声啼哭
-            <span class="achievement-badge">✓</span>
-          </div>
-          <div class="achievement-desc">
-            在这个特别的日子,你来到这个世界,给爸爸妈妈带来了无尽的欢乐!
-          </div>
-        </div>
-        <div class="achievement">
-          <div class="achievement-title">
-            第一次微笑
-            <span class="achievement-badge">✓</span>
-          </div>
-          <div class="achievement-desc">
-            那个甜美的笑容,让整个世界都亮了起来,是爸爸妈妈最珍贵的瞬间!
-          </div>
-        </div>
-        <div class="achievement">
-          <div class="achievement-title">
-            第一次翻身
-            <span class="achievement-badge">✓</span>
-          </div>
-          <div class="achievement-desc">
-            小小身体的力量,翻出人生的第一步,为你骄傲!
-          </div>
-        </div>
-        <div class="achievement">
-          <div class="achievement-title">
-            100天达成
-            <span class="achievement-badge">✓</span>
-          </div>
-          <div class="achievement-desc">
-            100天的成长,从襁褓中的小不点,到现在的可爱宝宝!
-          </div>
-        </div>
+      <div class="achievements" id="achievementsList">
+        <!-- 成就会通过JavaScript动态生成 -->
       </div>
     </section>
 
@@ -1709,6 +1704,108 @@
 
       // 更新等级徽章
       levelBadgeElement.textContent = `🏆 LV.${levelInfo.level} ${levelInfo.title}`;
+
+      // 更新成就列表
+      updateAchievements();
+    }
+
+    // 成就数据定义
+    const achievements = [
+      {
+        id: 'first-cry',
+        title: '第一声啼哭',
+        desc: '在这个特别的日子,你来到这个世界,给爸爸妈妈带来了无尽的欢乐!',
+        unlockDays: 0, // 0天即可解锁
+        icon: '👶'
+      },
+      {
+        id: 'first-smile',
+        title: '第一次微笑',
+        desc: '那个甜美的笑容,让整个世界都亮了起来,是爸爸妈妈最珍贵的瞬间!',
+        unlockDays: 15, // 15天左右
+        icon: '😊'
+      },
+      {
+        id: 'first-roll',
+        title: '第一次翻身',
+        desc: '小小身体的力量,翻出人生的第一步,为你骄傲!',
+        unlockDays: 90, // 3个月左右
+        icon: '🔄'
+      },
+      {
+        id: '100-days',
+        title: '100天达成',
+        desc: '100天的成长,从襁褓中的小不点,到现在的可爱宝宝!',
+        unlockDays: 100,
+        icon: '🎂'
+      },
+      {
+        id: 'first-sit',
+        title: '能坐起来了',
+        desc: '能独立坐一会儿了,探索世界的视角不一样啦!',
+        unlockDays: 180, // 6个月左右
+        icon: '🪑'
+      },
+      {
+        id: 'first-crawl',
+        title: '会爬行了',
+        desc: '努力爬行,向世界前进了一大步!',
+        unlockDays: 240, // 8个月左右
+        icon: '🐛'
+      },
+      {
+        id: 'first-stand',
+        title: '能站立了',
+        desc: '扶着东西能站起来了,准备好学走路啦!',
+        unlockDays: 300, // 10个月左右
+        icon: '🧍'
+      },
+      {
+        id: 'first-word',
+        title: '第一句话',
+        desc: '咿呀学语,说出了第一句话,是生命中最美的声音!',
+        unlockDays: 330, // 11个月左右
+        icon: '🗣️'
+      },
+      {
+        id: 'first-steps',
+        title: '迈出第一步',
+        desc: '摇摇晃晃的第一步,开启人生新的篇章!',
+        unlockDays: 360, // 12个月左右
+        icon: '👣'
+      },
+      {
+        id: 'one-year',
+        title: '一岁啦',
+        desc: '满一周岁了,这一年成长了太多,未来还有更多精彩!',
+        unlockDays: 365,
+        icon: '🎉'
+      }
+    ];
+
+    // 更新成就显示
+    function updateAchievements() {
+      const achievementsList = document.getElementById('achievementsList');
+      const days = calculateBabyAge();
+
+      if (!achievementsList) return;
+
+      achievementsList.innerHTML = achievements.map(achievement => {
+        const isUnlocked = days >= achievement.unlockDays;
+        const status = isUnlocked ? 'completed' : 'pending';
+
+        return `
+          <div class="achievement ${!isUnlocked ? 'locked' : ''}" data-id="${achievement.id}">
+            <div class="achievement-title">
+              ${achievement.icon} ${achievement.title}
+              <span class="achievement-badge ${status}"></span>
+            </div>
+            <div class="achievement-desc">
+              ${isUnlocked ? achievement.desc : `还需 ${achievement.unlockDays - days} 天解锁`}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // 存储祝福数据
