@@ -689,7 +689,7 @@
         <div class="attr-item">
           <div class="attr-icon">🎂</div>
           <div class="attr-label">年龄</div>
-          <div class="attr-value">100天</div>
+          <div class="attr-value" id="babyAge">计算中...</div>
         </div>
         <div class="attr-item">
           <div class="attr-icon">⚖️</div>
@@ -842,8 +842,40 @@
   </div>
 
   <script>
+    // 宝宝出生日期
+    const babyBirthDate = new Date('2025-12-15');
+
+    // 计算宝宝年龄
+    function calculateBabyAge() {
+      const now = new Date();
+      const diffTime = now - babyBirthDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    }
+
+    // 更新年龄显示
+    function updateBabyAge() {
+      const ageElement = document.getElementById('babyAge');
+      const age = calculateBabyAge();
+      ageElement.textContent = `${age}天`;
+    }
+
     // 存储祝福数据
     let wishes = [];
+
+    // 从localStorage加载祝福
+    function loadWishes() {
+      const saved = localStorage.getItem('babyWishes');
+      if (saved) {
+        wishes = JSON.parse(saved);
+        renderWishes();
+      }
+    }
+
+    // 保存祝福到localStorage
+    function saveWishes() {
+      localStorage.setItem('babyWishes', JSON.stringify(wishes));
+    }
 
     // 生成背景星星
     function createStars() {
@@ -917,6 +949,7 @@
       };
 
       wishes.push(wish);
+      saveWishes(); // 保存到localStorage
       renderWishes();
 
       // 清空表单
@@ -949,13 +982,16 @@
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
-      createStars();
-      createIcons();
-      renderWishes();
-
-      // 默认显示关于宝宝
       showSection('about');
     });
+
+    // 页面加载时初始化
+    window.onload = function() {
+      updateBabyAge(); // 更新年龄
+      loadWishes(); // 加载祝福
+      createStars(); // 创建背景星星
+      createIcons(); // 创建背景图标
+    };
   </script>
 </body>
 </html>
