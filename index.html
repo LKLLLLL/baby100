@@ -999,7 +999,9 @@
       .nav-btn {
         width: 100%;
         max-width: 300px;
+        min-height: 52px; /* 移动端触控目标最小52px */
         justify-content: center;
+        font-size: 1.1rem; /* 稍微增大字体便于点击 */
       }
 
       .gallery-grid {
@@ -1015,6 +1017,16 @@
 
       .character-card {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .attr-item {
+        padding: var(--spacing-md); /* 减少内边距 */
+        min-height: 80px; /* 确保触控区域足够 */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       .hero-photo {
@@ -1024,10 +1036,22 @@
 
       .wishes-wall {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .wish-card {
+        padding: var(--spacing-md);
+        min-height: 120px; /* 确保触控区域 */
       }
 
       .achievements {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .achievement {
+        padding: var(--spacing-md);
+        min-height: 100px;
       }
     }
 
@@ -1042,10 +1066,13 @@
 
       .gallery-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
       }
 
       .header-title {
         font-size: var(--text-h3);
+        line-height: var(--leading-tight);
+        padding: 0 var(--spacing-sm); /* 添加水平内边距避免换行问题 */
       }
 
       .hero-photo {
@@ -1055,10 +1082,232 @@
 
       .section-title {
         font-size: var(--text-h3);
+        line-height: var(--leading-tight);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .section-title::after {
+        width: 60px; /* 缩小装饰线宽度 */
+        height: 2px;
+        bottom: -6px;
       }
 
       .wish-form {
         padding: var(--spacing-lg);
+      }
+
+      .form-label {
+        font-size: var(--text-sm); /* 稍微减小标签字体 */
+      }
+
+      .form-input,
+      .form-textarea {
+        padding: 12px 16px; /* 稍微减小内边距 */
+        font-size: var(--text-base);
+        min-height: 48px; /* 确保触控目标足够 */
+      }
+
+      .form-textarea {
+        min-height: 100px;
+      }
+
+      .form-submit {
+        padding: 14px 20px;
+        font-size: var(--text-base);
+        min-height: 52px; /* 确保触控目标 */
+      }
+
+      .attr-value {
+        font-size: 1.3rem; /* 稍微减小 */
+      }
+
+      .attr-label {
+        font-size: 0.9rem;
+      }
+
+      .achievement-title {
+        font-size: var(--text-base);
+      }
+
+      .achievement-desc {
+        font-size: 0.9rem;
+        line-height: var(--leading-normal);
+      }
+
+      .wish-text {
+        font-size: var(--text-sm);
+        line-height: var(--leading-normal);
+      }
+
+      .wish-author {
+        font-size: 0.8rem;
+        margin-top: var(--spacing-sm);
+      }
+
+      .empty-wishes-icon {
+        font-size: 3rem; /* 减小图标 */
+      }
+
+      .empty-wishes-text {
+        font-size: var(--text-base);
+      }
+
+      .empty-wishes-hint {
+        font-size: var(--text-sm);
+      }
+
+      .gallery-info {
+        font-size: var(--text-base);
+        padding: var(--spacing-md);
+      }
+
+      .footer {
+        font-size: var(--text-sm);
+        padding: var(--spacing-xl) var(--spacing-md);
+      }
+    }
+
+    /* ===== 移动端额外优化 ===== */
+    @media (max-width: 480px) and (orientation: portrait) {
+      /* 竖屏模式优化 */
+      .header {
+        padding: var(--spacing-lg) var(--spacing-sm);
+      }
+
+      .header-title {
+        font-size: 1.8rem; /* 进一步减小 */
+      }
+
+      .level-badge {
+        font-size: 1rem;
+        padding: 6px 16px;
+      }
+
+      .main-container {
+        padding: var(--spacing-sm);
+      }
+
+      .content-section {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+        border-radius: var(--radius-md); /* 稍微减小圆角 */
+      }
+
+      .gallery-item {
+        border-width: 2px; /* 减小边框 */
+      }
+
+      .gallery-item:hover {
+        transform: scale(1.02); /* 减小缩放效果 */
+      }
+
+      /* 优化触摸反馈 - 移动端不需要悬停效果 */
+      .nav-btn:hover,
+      .card-item:hover,
+      .wish-card:hover {
+        transform: none; /* 移除悬停变换 */
+      }
+
+      /* 添加触摸激活效果 */
+      @media (hover: none) and (pointer: coarse) {
+        .nav-btn:active {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+
+        .attr-item:active,
+        .achievement:active,
+        .wish-card:active {
+          transform: scale(0.98);
+          opacity: 0.9;
+        }
+
+        .gallery-item:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+
+    /* ===== 超小屏幕优化 ===== */
+    @media (max-width: 360px) {
+      .header-title {
+        font-size: 1.6rem;
+      }
+
+      .hero-photo {
+        width: 100px;
+        height: 100px;
+      }
+
+      .attr-item {
+        padding: var(--spacing-sm);
+      }
+
+      .attr-value {
+        font-size: 1.2rem;
+      }
+
+      .attr-icon {
+        font-size: 2rem;
+      }
+
+      .achievement,
+      .wish-card {
+        padding: var(--spacing-sm);
+      }
+
+      /* 移动端图片优化 */
+      .gallery-item img {
+        min-height: 150px; /* 确保最小高度 */
+      }
+
+      .hero-photo img {
+        min-height: 120px;
+      }
+
+      /* 优化背景图标 - 移动端减少干扰 */
+      .bg-icon {
+        font-size: 16px;
+        opacity: 0.08;
+      }
+
+      .bg-star {
+        width: 3px;
+        height: 3px;
+      }
+    }
+
+    /* ===== 横屏模式优化 ===== */
+    @media (max-width: 896px) and (orientation: landscape) {
+      .header-title {
+        font-size: 2rem;
+      }
+
+      .hero-photo {
+        width: 140px;
+        height: 140px;
+      }
+
+      .nav-buttons {
+        flex-direction: row; /* 横屏保持水平 */
+        gap: var(--spacing-md);
+      }
+
+      .nav-btn {
+        width: auto;
+        min-width: 140px;
+      }
+
+      .character-card {
+        grid-template-columns: repeat(2, 1fr); /* 横屏2列 */
+      }
+
+      .wishes-wall {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .achievements {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -1070,6 +1319,81 @@
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== 移动端触摸优化 ===== */
+    @media (hover: none) and (pointer: coarse) {
+      /* 移除移动端的悬停效果 */
+      .nav-btn:hover,
+      .gallery-item:hover,
+      .attr-item:hover,
+      .achievement:hover,
+      .wish-card:hover,
+      .hero-photo:hover {
+        transform: none;
+      }
+
+      /* 添加触摸反馈 */
+      .nav-btn:active {
+        transform: scale(0.95);
+        opacity: 0.9;
+        transition: transform 0.1s;
+      }
+
+      .gallery-item:active {
+        transform: scale(0.97);
+        opacity: 0.95;
+        transition: transform 0.1s;
+      }
+
+      .attr-item:active,
+      .achievement:active,
+      .wish-card:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+        transition: transform 0.1s;
+      }
+
+      /* 表单输入优化 */
+      .form-input:active,
+      .form-textarea:active {
+        transform: scale(0.99);
+      }
+
+      /* 禁用不必要的动画 */
+      .bg-star,
+      .bg-icon {
+        animation: none; /* 移动端禁用背景动画以提升性能 */
+        opacity: 0.05; /* 降低透明度 */
+      }
+    }
+
+    /* ===== 移动端滚动优化 ===== */
+    @media (max-width: 480px) {
+      .main-container {
+        -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
+        overscroll-behavior: none; /* 禁用过度滚动 */
+      }
+
+      /* 优化点击区域 */
+      button,
+      .nav-btn,
+      .form-submit,
+      .gallery-item,
+      .attr-item,
+      .achievement,
+      .wish-card {
+        touch-action: manipulation; /* 优化触摸响应 */
+      }
+    }
+
+    /* ===== 移动端字体渲染优化 ===== */
+    @media (max-width: 480px) {
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
     }
 
@@ -1273,14 +1597,28 @@
       <div class="wish-form">
         <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--text);">✨ 发表你的祝福</h3>
         <div class="form-group">
-          <label class="form-label">你的名字</label>
-          <input type="text" class="form-input" id="wishAuthor" placeholder="请输入你的名字" />
+          <label class="form-label" for="wishAuthor">你的名字</label>
+          <input
+            type="text"
+            class="form-input"
+            id="wishAuthor"
+            placeholder="请输入你的名字"
+            autocomplete="name"
+            autocapitalize="words"
+            spellcheck="false"
+          />
         </div>
         <div class="form-group">
-          <label class="form-label">祝福内容</label>
-          <textarea class="form-textarea" id="wishContent" placeholder="写下你对宝宝的祝福..."></textarea>
+          <label class="form-label" for="wishContent">祝福内容</label>
+          <textarea
+            class="form-textarea"
+            id="wishContent"
+            placeholder="写下你对宝宝的祝福..."
+            rows="4"
+            spellcheck="true"
+          ></textarea>
         </div>
-        <button class="form-submit" onclick="submitWish()">💝 发送祝福</button>
+        <button class="form-submit" onclick="submitWish()" type="button">💝 发送祝福</button>
       </div>
 
       <!-- 祝福列表 -->
