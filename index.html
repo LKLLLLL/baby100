@@ -1460,7 +1460,7 @@
       <div class="hero-photo">
         <img src="ce271bc1ar41431779f8ef01e527d0e4.JPG" alt="宝宝照片" />
       </div>
-      <div class="level-badge">🏆 LV.3 小鼻嘎</div>
+      <div class="level-badge" id="levelBadge">🏆 LV.1 小鼻嘎</div>
       <div class="nav-buttons">
         <button class="nav-btn home" onclick="showSection('about')">
           👤 关于宝宝
@@ -1651,7 +1651,7 @@
     // 宝宝出生日期
     const babyBirthDate = new Date('2025-12-15');
 
-    // 计算宝宝年龄
+    // 计算宝宝月龄和等级
     function calculateBabyAge() {
       const now = new Date();
       const diffTime = now - babyBirthDate;
@@ -1659,11 +1659,56 @@
       return diffDays;
     }
 
-    // 更新年龄显示
+    // 计算月龄
+    function calculateMonths() {
+      const now = new Date();
+      const diffTime = now - babyBirthDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const months = Math.floor(diffDays / 30);
+      return months;
+    }
+
+    // 根据月龄获取等级和称号
+    function getLevelByMonths(months) {
+      // 每增加一个月,等级上升一级
+      const level = months >= 1 ? months : 1; // 至少1级
+
+      // 根据等级返回不同的称号
+      const titles = [
+        '小鼻嘎',      // LV.1
+        '小可爱',      // LV.2
+        '小萌宝',      // LV.3
+        '小天使',      // LV.4
+        '小甜心',      // LV.5
+        '小宝贝',      // LV.6
+        '小公主',      // LV.7
+        '小王子',      // LV.8
+        '小明星',      // LV.9
+        '小勇士',      // LV.10
+        '小超人',      // LV.11
+        '小英雄',      // LV.12
+      ];
+
+      return {
+        level: level,
+        title: titles[(level - 1) % titles.length] // 循环使用称号
+      };
+    }
+
+    // 更新年龄和等级显示
     function updateBabyAge() {
       const ageElement = document.getElementById('babyAge');
+      const levelBadgeElement = document.querySelector('.level-badge');
+
       const age = calculateBabyAge();
-      ageElement.textContent = `${age}天`;
+      const months = calculateMonths();
+      const levelInfo = getLevelByMonths(months);
+
+      // 更新年龄显示
+      ageElement.textContent = `${age}天 (${months}个月)`;
+
+      // 更新等级徽章
+      levelBadgeElement.textContent = `🏆 LV.${levelInfo.level} ${levelInfo.title}`;
     }
 
     // 存储祝福数据
@@ -1793,10 +1838,13 @@
 
     // 页面加载时初始化
     window.onload = function() {
-      updateBabyAge(); // 更新年龄
+      updateBabyAge(); // 更新年龄和等级
       loadWishes(); // 加载祝福
       createStars(); // 创建背景星星
       createIcons(); // 创建背景图标
+
+      // 每分钟更新一次年龄和等级
+      setInterval(updateBabyAge, 60000);
     };
   </script>
 </body>
