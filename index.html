@@ -2029,21 +2029,53 @@
       }).join('');
     }
 
+    // Supabase 配置
+    const SUPABASE_URL = 'https://cyrjnwyaymyuyomijzly.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5cmpud3lheW15dXlvbWlqemx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MjY3NjgsImV4cCI6MjA4OTUwMjc2OH0.XCiYchSG-0p2tOrbIYF6JOn_WBu3fyWGcRADF8PuqAw';
+
     // 存储祝福数据
     let wishes = [];
 
-    // 从localStorage加载祝福
-    function loadWishes() {
-      const saved = localStorage.getItem('babyWishes');
-      if (saved) {
-        wishes = JSON.parse(saved);
+    // 从Supabase加载祝福
+    async function loadWishes() {
+      try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/comments?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        const data = await response.json();
+        wishes = data.map(item => ({
+          id: item.id,
+          author: item.author,
+          content: item.content,
+          icon: item.icon,
+          rotation: Math.random() * 6 - 3
+        }));
         renderWishes();
+      } catch (err) {
+        console.error('加载祝福出错:', err);
       }
     }
 
-    // 保存祝福到localStorage
-    function saveWishes() {
-      localStorage.setItem('babyWishes', JSON.stringify(wishes));
+    // 保存祝福到Supabase
+    async function saveWishToSupabase(wish) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/comments`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          author: wish.author,
+          content: wish.content,
+          icon: wish.icon
+        })
+      });
+      if (!response.ok) throw new Error('保存失败');
     }
 
     // 生成背景星星
@@ -2094,7 +2126,7 @@
     }
 
     // 提交祝福
-    function submitWish() {
+    async function submitWish() {
       const authorInput = document.getElementById('wishAuthor');
       const contentInput = document.getElementById('wishContent');
 
@@ -2117,8 +2149,8 @@
         rotation: Math.random() * 6 - 3 // -3到3度的随机旋转
       };
 
-      wishes.push(wish);
-      saveWishes(); // 保存到localStorage
+      wishes.unshift(wish);
+      await saveWishToSupabase(wish); // 保存到云端
       renderWishes();
 
       // 清空表单
@@ -2142,7 +2174,7 @@
       emptyWishes.style.display = 'none';
       wishesList.innerHTML = wishes.map(wish => `
         <div class="wish-card" style="--rotation: ${wish.rotation};">
-          <div class="wish-icon">${wish.icon}</div>
+          <div class="wish-icon">${wish.icon || '💝'}</div>
           <div class="wish-text">${wish.content}</div>
           <div class="wish-author">— ${wish.author}</div>
         </div>
