@@ -1807,6 +1807,17 @@
           />
         </div>
         <div class="form-group">
+          <label class="form-label" for="wishPhone">联系方式（选填，仅主人可见）</label>
+          <input
+            type="tel"
+            class="form-input"
+            id="wishPhone"
+            placeholder="手机号，方便主人联系你（不会公开显示）"
+            autocomplete="tel"
+            spellcheck="false"
+          />
+        </div>
+        <div class="form-group">
           <label class="form-label" for="wishContent">祝福内容</label>
           <textarea
             class="form-textarea"
@@ -2046,7 +2057,8 @@
         body: JSON.stringify({
           author: wish.author,
           content: wish.content,
-          icon: wish.icon
+          icon: wish.icon,
+          phone: wish.phone || ''
         })
       });
       if (!response.ok) throw new Error('保存失败');
@@ -2103,9 +2115,11 @@
     async function submitWish() {
       const authorInput = document.getElementById('wishAuthor');
       const contentInput = document.getElementById('wishContent');
+      const phoneInput = document.getElementById('wishPhone');
 
       const author = authorInput.value.trim();
       const content = contentInput.value.trim();
+      const phone = phoneInput ? phoneInput.value.trim() : '';
 
       if (!author || !content) {
         alert('请填写名字和祝福内容!');
@@ -2120,6 +2134,7 @@
         author: author,
         content: content,
         icon: icon,
+        phone: phone,
         rotation: Math.random() * 6 - 3 // -3到3度的随机旋转
       };
 
@@ -2130,6 +2145,7 @@
       // 清空表单
       authorInput.value = '';
       contentInput.value = '';
+      if (phoneInput) phoneInput.value = '';
 
       alert('祝福发送成功! 💝');
     }
